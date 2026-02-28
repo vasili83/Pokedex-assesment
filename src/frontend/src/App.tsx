@@ -1,10 +1,35 @@
-import { useState } from 'react'
+import APIHandler from 'restful-api-handler'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
+
+
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const [connectionOK, setConnectionOK] = useState(false);
+
+  const apiConnect = async () => {
+    const APIconnection = new APIHandler({baseURL: "http://localhost:5000/api/Pokemon"});
+    await APIconnection.check();
+    const ok = APIconnection.isOk;
+    setConnectionOK(ok);
+    return ok;
+  }
+  const connectionCallback = (ok:boolean) => {
+    ok ? console.log("yes! Let's start pokedexing") : console.log("loading");
+  }
+
+  useEffect(()=>{
+      apiConnect();
+  }, []);
+
+  useEffect(()=>{
+   connectionCallback(connectionOK); 
+  }, [connectionOK]);
+
+
 
   return (
     <>
@@ -16,17 +41,8 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+      <p>
+        connectie: {connectionOK ? "OK" : "laden..."}
       </p>
     </>
   )
