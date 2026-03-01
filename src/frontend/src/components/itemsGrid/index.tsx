@@ -1,15 +1,15 @@
-export const showItemsGrid = (jsonData: Record<string, any>[] | undefined) => {
-    const grid = jsonData?.length ? jsonData.map((item) => {
-        return (
-            <div>
-                <h2>{item.name}</h2>
-                <img src={item.sprites.front_default} />
-            </div>
-        );
-    }) : (<>...</>);
+import { EmptyState } from "../emptystate";
+import { CardItem } from "../carditem";
+import  { type CardData } from '../carditem/types';
+export const showItemsGrid = (jsonData: CardData[] | undefined) => {
+    const content = jsonData?.length ? jsonData.map((item) =>
+        <CardItem data={item} key={item.id} />) : <EmptyState />;
     return (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {grid}
+        <>
+        <header className="w-full"><h1 className="text-4xl font-bold">Pokemons in the wild</h1></header>
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-1/2">
+            {content}
         </div>
+        </>
     );
 }
