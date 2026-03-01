@@ -7,6 +7,7 @@ import './App.css'
 
 function App() {
   
+  const [connectionOk, setConnectionOk] = useState(false);
   const [freePokemons, setFreePokemons] = useState([]);
   const [pokemonDex, setPokemonDex] = useState([]);
 
@@ -14,20 +15,35 @@ function App() {
     init();
   }, []);
 
-  const init = async ()=>{
-    const connectionOk = await apiConnect();
-    const freePokemonsData = connectionOk && await api.loadAllFreePokemons();
+  const init = async () => {
+    let ok = await apiConnect();
+    setConnectionOk(ok);
+   if(ok){
+      retrieveFreePokemons();
+      retrievePokemonDex();
+    } else {
+      console.error("something went wrong with connection/retrieving");
+    }
+  }
+
+  const retrieveFreePokemons = async () => {
+    const freePokemonsData = await api.loadAllFreePokemons();
     setFreePokemons(freePokemonsData);
-    const pokemonDexData = connectionOk && await api.loadPokedex();
+  }
+
+  const retrievePokemonDex = async () => {
+    const pokemonDexData = await api.loadPokedex();
     setPokemonDex(pokemonDexData);
   }
 
-  const catchPokemon = (id) => {
-    api.addPokemonToDex(id);
+  const catchPokemon = async (id:number) => {
+    await api.addPokemonToDex(id);
+    retrievePokemonDex();
   }
 
-  const removePokemon = (id) => {
-    api.removePokemonFromDex(id);
+  const removePokemon = async (id:number) => {
+    await api.removePokemonFromDex(id);
+    retrievePokemonDex();
   }
 
   return (
