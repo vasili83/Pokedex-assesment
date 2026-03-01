@@ -11,7 +11,7 @@ function App() {
   const [connectionOK, setConnectionOK] = useState(false);
   const [allPokemons, setAllPokemons] = useState();
 
-  const APIconnection = new APIHandler({baseURL: "http://localhost:5000/api/Pokemon"}); // TODO: health endpoint toevoegen?
+  const APIconnection = new APIHandler({baseURL: "http://localhost:5000/api"});
 
   const apiConnect = async () => {
     await APIconnection.check();
@@ -23,8 +23,7 @@ function App() {
     ok ? loadData() : console.log("loading..");
   }
   const loadData = () => {
-    // TODO: veranderen naar /Pokemon zodra /health klaar is.
-    APIconnection.requestJSON("/")
+    APIconnection.requestJSON("/Pokemon")
     .then((response)=>{
       console.log(response);
       showPokemon(JSON.parse(response));
