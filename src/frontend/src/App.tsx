@@ -37,11 +37,13 @@ function App() {
   }
 
   const catchPokemon = async (id:number) => {
+    if(!connectionOk) return;
     await api.addPokemonToDex(id);
     retrievePokemonDex();
   }
 
   const removePokemon = async (id:number) => {
+    if(!connectionOk) return;
     await api.removePokemonFromDex(id);
     retrievePokemonDex();
   }
