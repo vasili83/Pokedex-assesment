@@ -1,70 +1,31 @@
-import APIHandler from 'restful-api-handler'
+
 import { useState, useEffect } from 'react'
+import { showItemsGrid } from './components/itemsGrid';
 import { Button } from '@heroui/react';
+import { apiConnect, api } from './data/apiHandler';
 
 import './App.css'
 
-
-
 function App() {
   
-  const [connectionOK, setConnectionOK] = useState(false);
-  const [allPokemons, setAllPokemons] = useState();
+  const [freePokemons, setFreePokemons] = useState([]);
 
-  const APIconnection = new APIHandler({baseURL: "http://localhost:5000/api"});
-
-  const apiConnect = async () => {
-    await APIconnection.check();
-    const ok = APIconnection.isOk;
-    setConnectionOK(ok);
-    return ok;
-  }
-  const connectionCallback = (ok:boolean) => {
-    ok ? loadData() : console.log("loading..");
-  }
-  const loadData = () => {
-    APIconnection.requestJSON("/Pokemon")
-    .then((response)=>{
-      console.log(response);
-      showPokemon(JSON.parse(response));
-    })
-    .catch((err)=>showError("something went wrong with the Pokemons(dex)", err));
-  }
-  const showPokemon = (jsonData:Record<string, any>[]) => {
-    const allP = jsonData.map((item) => {
-      return (
-        <div>
-          <h2>{item.name}</h2>
-          <img src={item.sprites.front_default} />
-        </div>
-      );
-    });
-    setAllPokemons(allP);
-  }
-  const showError = (title, mssg) => {
-    console.error(title, mssg);
-  }
-
-  useEffect(()=>{
-      apiConnect();
+  useEffect(() => {
+    init();
   }, []);
 
-  useEffect(()=>{
-   connectionCallback(connectionOK); 
-  }, [connectionOK]);
+  const init = async ()=>{
+    const connectionOk = await apiConnect();
+    const freePokemons = connectionOk && await api.loadAllFreePokemons();
+    console.dir(freePokemons);
+    setFreePokemons(freePokemons);
+  }
 
-  return connectionOK ?
-  (
+  return (
     <>
-      <div className="grid grid-cols-3 gap-4">
-        {allPokemons}
-      </div>
+        {showItemsGrid(freePokemons)}
     </>
-  ) : (
-    <>
-      trying to load....
-    </>
-  )
+  );
 }
 
 export default App
