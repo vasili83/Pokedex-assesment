@@ -22,14 +22,20 @@ function App() {
     setPokemonDex(pokemonDexData);
   }
 
+  const catchPokemon = (id) => {
+    api.addPokemonToDex(id);
+  }
+
+  const removePokemon = (id) => {
+    api.removePokemonFromDex(id);
+  }
+
   return (
       <div className="flex gap-6 m-10">
-        <ShowItemsGrid title="Pokemons in the wild" jsonData={freePokemons} />
-        <ShowItemsGrid title="Pokemons you caught" jsonData={pokemonDex} />
+        <ShowItemsGrid title="Pokemons in the wild" jsonData={freePokemons} btnType="catchPokemon" btnCallback={catchPokemon} />
+        <ShowItemsGrid title="Pokemons you caught" jsonData={pokemonDex} btnType="deletePokemon" btnCallback={removePokemon} />
       </div>
   );
 }
-
-// lunchbreak from last push to now/this push
 
 export default App
