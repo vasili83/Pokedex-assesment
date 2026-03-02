@@ -8,7 +8,9 @@ export const apiConnect = async () => {
     return APIconnection.isOk;
 }
 const requestJSON = async (endpoint:any, options?: any) => {
-  const response = await APIconnection.requestJSON(endpoint, options);
-  return typeof response === "string" ? JSON.parse(response) : response;
+  const response = await APIconnection.requestJSON(endpoint, options)
+  .then((response)=>{return typeof response === "string" ? JSON.parse(response) : response;})
+  .catch((err) => console.log("error", err));
+  return response;
 };
 export const api = endpoints(requestJSON);
